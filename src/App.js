@@ -1,25 +1,58 @@
-import logo from './logo.svg';
+// src/App.js
+import React, { useState } from 'react';
+import { fetchWeatherData } from './services/weatherService';
+import SearchBar from './components/SearchBar';
+import CityCard from './components/CityCard';
+import WeatherGraph from './components/WeatherGraph';
 import './App.css';
 
-function App() {
+const App = () => {
+  const [cities, setCities] = useState([]);
+  const [weatherData, setWeatherData] = useState({});
+  const [selectedCity, setSelectedCity] = useState(null);
+
+  const handleSearch = async (city) => {
+    try {
+      const data = await fetchWeatherData(city);
+      setWeatherData((prevData) => ({ ...prevData, [city]: data }));
+      setCities((prevCities) => [...prevCities, city]);
+    } catch (error) {
+      alert('Could not fetch weather data. Please try again.');
+    }
+  };
+
+  const handleRemoveCity = (city) => {
+    setCities(cities.filter((item) => item !== city));
+    const newWeatherData = { ...weatherData };
+    delete newWeatherData[city];
+    setWeatherData(newWeatherData);
+  };
+
+  const handleSelectCity = (city) => {
+    setSelectedCity(city);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <h1>Weather Dashboard</h1>
+      <SearchBar onSearch={handleSearch} />
+      
+      <div className="city-cards">
+        {cities.map((city) => (
+          <div key={city} onClick={() => handleSelectCity(city)}>
+            <CityCard city={city} weatherData={weatherData[city]} removeCity={handleRemoveCity} />
+          </div>
+        ))}
+      </div>
+
+      {selectedCity && weatherData[selectedCity] && (
+        <div className="weather-graph">
+          {/* Pass forecast data to the WeatherGraph component */}
+          <WeatherGraph data={weatherData[selectedCity].forecast} />
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default App;

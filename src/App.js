@@ -11,6 +11,8 @@ const App = () => {
   const [weatherData, setWeatherData] = useState({});
   const [selectedCity, setSelectedCity] = useState(null);
 
+  const predefinedCities = ["New York", "London", "Paris", "Tokyo", "Sydney"];
+
   const handleSearch = async (city) => {
     try {
       const data = await fetchWeatherData(city);
@@ -36,7 +38,16 @@ const App = () => {
     <div className="app">
       <h1>Weather Dashboard</h1>
       <SearchBar onSearch={handleSearch} />
-      
+
+      <div className="predefined-cities">
+        <h3>Select a City:</h3>
+        {predefinedCities.map((city) => (
+          <button key={city} onClick={() => handleSearch(city)}>
+            {city}
+          </button>
+        ))}
+      </div>
+
       <div className="city-cards">
         {cities.map((city) => (
           <div key={city} onClick={() => handleSelectCity(city)}>
@@ -47,7 +58,6 @@ const App = () => {
 
       {selectedCity && weatherData[selectedCity] && (
         <div className="weather-graph">
-          {/* Pass forecast data to the WeatherGraph component */}
           <WeatherGraph data={weatherData[selectedCity].forecast} />
         </div>
       )}

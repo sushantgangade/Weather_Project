@@ -1,8 +1,6 @@
 // src/services/weatherService.js
 
-// Mock function to simulate fetching weather data
 export const fetchWeatherData = async (city) => {
-    // Dummy weather data for the city
     const mockData = {
       "New York": {
         current: { temp: 15, weather: [{ description: "Sunny" }], main: { temp_max: 18, temp_min: 12 } },

@@ -15,61 +15,55 @@ ChartJS.register(
 );
 
 const WeatherGraph = ({ data }) => {
-  // Ensure that we have data, otherwise return null
-  if (!data || data.length === 0) {
-    return <p>No data available for graph.</p>;
-  }
+  if (!data || data.length === 0) return <p>No data available for graph.</p>;
 
-  // Preparing the labels and temperature data from the forecast
+  // Prepare the labels and temperature data
   const labels = data.map((item) => new Date(item.dt_txt).toLocaleTimeString());
   const temperatures = data.map((item) => item.main.temp);
 
-  // Setting up the chart data
   const chartData = {
     labels: labels,
-    datasets: [{
-      label: 'Temperature (°C)',
-      data: temperatures,
-      borderColor: '#42A5F5',  // Light Blue color for the line
-      backgroundColor: 'rgba(66, 165, 245, 0.2)',  // Light blue fill
-      fill: true,  // To fill the area under the line
-      pointRadius: 5,
-      pointBackgroundColor: '#42A5F5',
-    }]
+    datasets: [
+      {
+        label: 'Temperature (°C)',
+        data: temperatures,
+        borderColor: '#42A5F5', // Light Blue color for the line
+        backgroundColor: 'rgba(66, 165, 245, 0.2)', // Light blue fill
+        fill: true,
+        pointRadius: 5,
+        pointBackgroundColor: '#42A5F5',
+      },
+    ],
   };
 
-  // Chart.js options (customize as needed)
   const options = {
     responsive: true,
     plugins: {
       title: {
         display: true,
         text: 'Temperature Trend for the Next 3 Hours',
-        font: {
-          size: 16
-        }
       },
       tooltip: {
         callbacks: {
-          label: (context) => `${context.raw}°C` // Display temperature in °C
-        }
-      }
+          label: (context) => `${context.raw}°C`,
+        },
+      },
     },
     scales: {
       x: {
         title: {
           display: true,
-          text: 'Time'
+          text: 'Time',
         },
       },
       y: {
         title: {
           display: true,
-          text: 'Temperature (°C)'
+          text: 'Temperature (°C)',
         },
-        beginAtZero: false,  // Don't start y-axis from 0 for better visual scaling
-      }
-    }
+        beginAtZero: false,
+      },
+    },
   };
 
   return <Line data={chartData} options={options} />;
